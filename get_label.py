@@ -28,7 +28,7 @@ for dir in os.listdir(Folder):
     for file in os.listdir(os.path.join(Folder,dir)):
         d=int(dir[1:])
         fir=int(file)
-        ini=[0]*64
+        ini='0 '*64
         
         #for i in range(0,len(excel_list)):
         for i in range(0,len(excel_list)):
@@ -43,11 +43,19 @@ for dir in os.listdir(Folder):
         label=lab
 
         
-        for i in range(0,len(label)):
-            ini[int(label[i])-1]=1
-               
+        for l in label:
+            ini=list(ini)
+            ini[int(l)*2-2]='1'
+            ini=''.join(ini)
+
+        last=list(ini)
+        last=last[:-1]
+        last=''.join(last)
+        ini=last
+
+              
         for img in os.listdir(os.path.join(Folder,dir,file)):
-            path=Folder+dir+'/'+file+'/'+img+" "+str(ini)+'\n'    
+            path=Folder+dir+'/'+file+'/'+img+" "+ini+'\n'    
             f.writelines(path)
         
 
