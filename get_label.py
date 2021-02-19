@@ -23,39 +23,32 @@ Folder = "D:/CK/CK表情数据集/CK表情数据集/cohn-kanade/cohn-kanade/cohn
 Out = "C:/Users/李笑嫣/Desktop/AU代码/1.txt"
 
 f = open(Out, "w")
+
 for dir in os.listdir(Folder):
     for file in os.listdir(os.path.join(Folder,dir)):
         d=int(dir[1:])
         fir=int(file)
         ini=[0]*64
         
+        #for i in range(0,len(excel_list)):
         for i in range(0,len(excel_list)):
-            str_l=str(excel_list[i][2])
-            label=str_l.split('+')
-            lab=[]
-            for l in label:
-                la=list([val for val in l if val.isnumeric()])
-                strr="".join(la)
-                lab.append(strr)
-                label=lab
+            if excel_list[i][0]==d and excel_list[i][1]== fir:
+                str_l=str(excel_list[i][2])
+        label=str_l.split('+')
+        lab=[]
+        for l in label:
+            la=list([val for val in l if val.isnumeric()])
+            strr="".join(la)
+            lab.append(strr)
+        label=lab
 
-            #print(label)
-            #print(ini)
-            for i in range(0,len(label)):
-                ini[int(label[i])-1]=1
-            #print(ini)
-                
-                
-                
-                
         
+        for i in range(0,len(label)):
+            ini[int(label[i])-1]=1
+               
         for img in os.listdir(os.path.join(Folder,dir,file)):
             path=Folder+dir+'/'+file+'/'+img+" "+str(ini)+'\n'    
             f.writelines(path)
         
 
 f.close()
-
-
-
-
