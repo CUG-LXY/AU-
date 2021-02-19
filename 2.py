@@ -68,6 +68,15 @@ class clf(nn.Module):
 
         return x
 
+trans = transforms.Compose([
+        # 将图像进行缩放，缩放为256*256
+        transforms.Resize([256,256]),
+        # transforms.Grayscale(1),
+        # 转换成tensor向量
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    ])
+
 
 class Dataset(data.Dataset):
     def __init__(self, data_path, transform=None):
@@ -77,31 +86,11 @@ class Dataset(data.Dataset):
         labels = []
         with  open(data_path, 'r') as f:
             for line in f.readlines():
-                image_path = line.split(' ')[0]
-                label = line.split(' ')[1]
-                label=label.split('+')
-                lab=[]
-                for l in label:
-                    la=list([val for val in l if val.isnumeric()])
-                    strr="".join(la)
-                    #print(strr)
-                    lab.append(strr)
-                label=lab
-                #print(label)
-                image = Image.open(image_path)
-                image = image.convert("RGB")
-                if transform is not None:
-                    image = transform(image)
-                for i in range(0,len(label)):
-                    #if label[i]=='':
-                    images.append(image)
-                    #print(label[i])
-                    l = torch.LongTensor(int(label[i]))
-                    labels.append(l)
-                #label = torch.LongTensor([label])
-
-                #images.append(image)
-                #labels.append(label)
+                line.strip('\n')
+                line.rstrip()
+                information = line.split()
+                images.append(information[0])
+                labels.append([float(l) for l in information[1:len(information)]])
 
         self.data_path = data_path
         self.transform = transform
@@ -115,24 +104,17 @@ class Dataset(data.Dataset):
 
     def __getitem__(self, index):
         "Generates one sample of data"
-        image = self.images[index]
+        ImageName = self.images[index]
         label = self.labels[index]
-        #print(label)
-        # re = {'image':image, 'label':label}
-        # return re
-        #print(image.shape)
-        #print(label.shape)
-        label.resize_(50)
+        image = Image.open(ImageName)
+        if transform is not None:
+            image = transform(image)
+        label = torch.FloatTensor(label)
         return image, label
+        
 
 
-trans = transforms.Compose([
-        # 将图像进行缩放，缩放为256*256
-        transforms.Resize([100,60]),
-        # transforms.Grayscale(1),
-        # 转换成tensor向量
-        transforms.ToTensor()
-    ])
+
 
 if __name__ == '__main__':
 
